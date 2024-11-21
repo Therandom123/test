@@ -3,8 +3,8 @@ local TextChatService = game:GetService("TextChatService")
 local whitelist = {
     ["aabbaaii14"] = true,
     ["Straightoutacomptn"] = true,
-    ["Canbinfexs430765hggf"] = true
-    ["bladeball_player234"] = true
+    ["Canbinfexs430765hggf"] = true,
+    ["bladeball_player234"] = true,
     ["aabbaaii13"] = true
 }
 
